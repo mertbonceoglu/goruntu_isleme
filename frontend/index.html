@@ -11,7 +11,19 @@
     <div class="app-container">
         <!-- Sidebar -->
         <aside class="sidebar">
-            <h1 class="logo">Vision<span>Lab</span></h1>
+            <div class="logo-container" style="padding: 30px; display: flex; justify-content: center; border-bottom: 1px solid var(--border);">
+                <svg viewBox="0 0 24 24" width="48" height="48" stroke="url(#logo-gradient)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <defs>
+                        <linearGradient id="logo-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#3b82f6" />
+                            <stop offset="100%" stop-color="#8b5cf6" />
+                        </linearGradient>
+                    </defs>
+                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                    <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                    <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                </svg>
+            </div>
             
             <div class="menu">
                 <div class="category">
@@ -184,6 +196,9 @@
             <img id="histogram-img" src="" alt="Histogram" style="display: none; width: 100%; margin-top: 16px; border-radius: 8px;">
         </div>
     </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
 
     <script src="/static/app.js"></script>
 </body>

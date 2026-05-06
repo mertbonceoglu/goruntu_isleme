@@ -32,6 +32,27 @@ document.addEventListener('DOMContentLoaded', () => {
     let historyStack = [];
     let currentOperation = 'gray';
 
+    // Toast Notification System
+    function showToast(message, type = 'error') {
+        const container = document.getElementById('toast-container');
+        if (!container) return;
+        
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+        
+        const iconSvg = type === 'error' 
+            ? '<svg viewBox="0 0 24 24" width="20" height="20" stroke="#ef4444" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>'
+            : '<svg viewBox="0 0 24 24" width="20" height="20" stroke="#3b82f6" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>';
+            
+        toast.innerHTML = `${iconSvg} <span>${message}</span>`;
+        container.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.classList.add('toast-hide');
+            setTimeout(() => toast.remove(), 400);
+        }, 3000);
+    }
+
     // Slider Configurations
     const operationSliders = {
         'rotate': [
@@ -219,6 +240,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Keyboard Shortcuts
+    document.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && (e.key === 'z' || e.key === 'Z')) {
+            e.preventDefault();
+            if (!undoBtn.disabled) {
+                undoBtn.click();
+            }
+        }
+    });
+
     closeBtn.onclick = function() {
         histogramModal.style.display = "none";
     }
@@ -240,7 +271,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     processBtn.addEventListener('click', async () => {
         if (!file1.files[0] && historyStack.length === 0) {
-            alert('Lütfen önce birinci görüntüyü yükleyin!');
+            showToast('Lütfen önce birinci görüntüyü yükleyin!');
             return;
         }
 
@@ -264,10 +295,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     histogramImg.src = data.histogram_image;
                     histogramImg.style.display = 'block';
                 } else {
-                    alert('Hata: ' + data.message);
+                    showToast('Hata: ' + data.message);
                 }
             } catch (error) {
-                alert('Sunucuya bağlanılamadı.');
+                showToast('Sunucuya bağlanılamadı.');
             } finally {
                 histogramLoader.style.display = 'none';
             }
@@ -275,7 +306,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (currentOperation.startsWith('arithmetic') && !file2.files[0]) {
-            alert('Bu işlem için ikinci görüntüyü yüklemeniz gereklidir!');
+            showToast('Bu işlem için ikinci görüntüyü yüklemeniz gereklidir!');
             return;
         }
 
@@ -314,13 +345,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 historyStack.push(data.processed_image);
                 updateUndoButton();
             } else {
-                alert('Hata: ' + data.message);
+                showToast('Hata: ' + data.message);
                 if (historyStack.length > 0) resultImg.style.display = 'block';
                 else resultPlaceholder.style.display = 'flex';
             }
         } catch (error) {
             console.error('Error:', error);
-            alert('Sunucuya bağlanılamadı.');
+            showToast('Sunucuya bağlanılamadı.');
             if (historyStack.length > 0) resultImg.style.display = 'block';
             else resultPlaceholder.style.display = 'flex';
         } finally {

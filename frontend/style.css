@@ -22,6 +22,48 @@ body {
     color: var(--text-main);
     min-height: 100vh;
     overflow-x: hidden;
+    position: relative;
+    z-index: 0;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: -20%;
+    left: -10%;
+    width: 60%;
+    height: 60%;
+    background: radial-gradient(circle, rgba(59,130,246,0.08) 0%, rgba(15,23,42,0) 70%);
+    z-index: -1;
+    pointer-events: none;
+}
+
+body::after {
+    content: '';
+    position: fixed;
+    bottom: -20%;
+    right: -10%;
+    width: 60%;
+    height: 60%;
+    background: radial-gradient(circle, rgba(139,92,246,0.08) 0%, rgba(15,23,42,0) 70%);
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.15);
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255,255,255,0.3);
 }
 
 .app-container {
@@ -40,14 +82,7 @@ body {
 }
 
 .logo {
-    padding: 24px;
-    font-size: 24px;
-    font-weight: 600;
-    border-bottom: 1px solid var(--border);
-    color: var(--text-main);
-}
-.logo span {
-    color: var(--primary);
+    display: none; /* Logo SVG ile değiştirildi, bunu gizleyebiliriz veya silebiliriz, class kalabilir */
 }
 
 .menu {
@@ -119,7 +154,7 @@ body {
 }
 
 .primary-btn {
-    background-color: var(--primary);
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
     color: white;
     border: none;
     padding: 10px 24px;
@@ -127,11 +162,13 @@ body {
     font-size: 14px;
     font-weight: 500;
     cursor: pointer;
-    transition: background 0.2s ease;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
 }
 
 .primary-btn:hover {
-    background-color: var(--primary-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
 }
 
 /* Workspace */
@@ -153,6 +190,13 @@ body {
     min-width: 300px;
     display: flex;
     flex-direction: column;
+    transition: all 0.3s ease;
+}
+
+.image-panel:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    border-color: rgba(255, 255, 255, 0.2);
 }
 
 .panel-header {
@@ -402,4 +446,55 @@ body {
     gap: 12px;
     border-top: 1px solid var(--border);
     padding-top: 16px;
+}
+
+/* Toast Notification Styles */
+.toast-container {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 9999;
+}
+
+.toast {
+    background: rgba(30, 41, 59, 0.95);
+    backdrop-filter: blur(10px);
+    border-left: 4px solid var(--primary);
+    color: white;
+    padding: 16px 20px;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transform: translateX(120%);
+    opacity: 0;
+    animation: toastSlideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.toast.toast-error {
+    border-left-color: #ef4444;
+}
+
+.toast.toast-hide {
+    animation: toastSlideOut 0.4s ease forwards;
+}
+
+@keyframes toastSlideIn {
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes toastSlideOut {
+    to {
+        transform: translateX(120%);
+        opacity: 0;
+    }
 }
