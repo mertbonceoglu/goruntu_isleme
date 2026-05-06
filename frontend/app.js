@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
             { id: 'param1', label: 'Döndürme Açısı (Derece)', min: -180, max: 180, step: 1, value: 45 }
         ],
         'zoom': [
-            { id: 'param1', label: 'Yakınlaştırma Oranı', min: 0.1, max: 5.0, step: 0.1, value: 2.0 }
+            { id: 'param1', label: 'Yakınlaştırma Oranı (%)', min: 10, max: 500, step: 10, value: 200 }
         ],
         'crop': [
             { id: 'param1', label: 'Başlangıç X', min: 0, max: 2000, step: 10, value: 50 },
@@ -47,13 +47,13 @@ document.addEventListener('DOMContentLoaded', () => {
             { id: 'param4', label: 'Yükseklik', min: 50, max: 2000, step: 10, value: 300 }
         ],
         'noise_sp': [
-            { id: 'param1', label: 'Gürültü Olasılığı', min: 0.01, max: 0.2, step: 0.01, value: 0.05 }
+            { id: 'param1', label: 'Gürültü Yoğunluğu (%)', min: 1, max: 20, step: 1, value: 5 }
         ],
         'filter_mean': [
-            { id: 'param1', label: 'Çekirdek Boyutu (Kernel)', min: 3, max: 15, step: 2, value: 3 }
+            { id: 'param1', label: 'Bulanıklık Derecesi (Bölge Boyutu)', min: 3, max: 15, step: 2, value: 3 }
         ],
         'filter_median': [
-            { id: 'param1', label: 'Çekirdek Boyutu (Kernel)', min: 3, max: 15, step: 2, value: 3 }
+            { id: 'param1', label: 'Bulanıklık Derecesi (Bölge Boyutu)', min: 3, max: 15, step: 2, value: 3 }
         ],
         'filter_motion': [
             { id: 'param1', label: 'Bulanıklık Şiddeti (Kernel)', min: 3, max: 31, step: 2, value: 9 }
@@ -63,16 +63,16 @@ document.addEventListener('DOMContentLoaded', () => {
             { id: 'param2', label: 'Üst Eşik', min: 0, max: 255, step: 1, value: 150 }
         ],
         'dilate': [
-            { id: 'param1', label: 'Çekirdek Boyutu (Kernel)', min: 3, max: 15, step: 2, value: 3 }
+            { id: 'param1', label: 'Etki Miktarı (Bölge Boyutu)', min: 3, max: 15, step: 2, value: 3 }
         ],
         'erode': [
-            { id: 'param1', label: 'Çekirdek Boyutu (Kernel)', min: 3, max: 15, step: 2, value: 3 }
+            { id: 'param1', label: 'Etki Miktarı (Bölge Boyutu)', min: 3, max: 15, step: 2, value: 3 }
         ],
         'open': [
-            { id: 'param1', label: 'Çekirdek Boyutu (Kernel)', min: 3, max: 15, step: 2, value: 3 }
+            { id: 'param1', label: 'Etki Miktarı (Bölge Boyutu)', min: 3, max: 15, step: 2, value: 3 }
         ],
         'close': [
-            { id: 'param1', label: 'Çekirdek Boyutu (Kernel)', min: 3, max: 15, step: 2, value: 3 }
+            { id: 'param1', label: 'Etki Miktarı (Bölge Boyutu)', min: 3, max: 15, step: 2, value: 3 }
         ]
     };
 
@@ -86,22 +86,52 @@ document.addEventListener('DOMContentLoaded', () => {
             group.className = 'slider-group';
             
             const label = document.createElement('label');
-            label.innerHTML = `${slider.label} <span id="val-${slider.id}">${slider.value}</span>`;
+            label.textContent = slider.label;
+            label.style.display = 'block';
+            label.style.marginBottom = '6px';
+            
+            const controlsDiv = document.createElement('div');
+            controlsDiv.style.display = 'flex';
+            controlsDiv.style.gap = '12px';
+            controlsDiv.style.alignItems = 'center';
             
             const input = document.createElement('input');
             input.type = 'range';
-            input.id = slider.id;
+            input.id = `range-${slider.id}`;
             input.min = slider.min;
             input.max = slider.max;
             input.step = slider.step;
             input.value = slider.value;
+            input.style.flex = '1';
+
+            const numberInput = document.createElement('input');
+            numberInput.type = 'number';
+            numberInput.id = slider.id; // Backend'in okuması için id'si bu olacak
+            numberInput.min = slider.min;
+            numberInput.max = slider.max;
+            numberInput.step = slider.step;
+            numberInput.value = slider.value;
+            numberInput.className = 'number-input';
+            numberInput.style.width = '70px';
+            numberInput.style.padding = '6px';
+            numberInput.style.borderRadius = '4px';
+            numberInput.style.border = '1px solid rgba(255,255,255,0.2)';
+            numberInput.style.backgroundColor = 'rgba(0,0,0,0.2)';
+            numberInput.style.color = '#fff';
+            numberInput.style.textAlign = 'center';
 
             input.addEventListener('input', (e) => {
-                document.getElementById(`val-${slider.id}`).textContent = e.target.value;
+                numberInput.value = e.target.value;
+            });
+            numberInput.addEventListener('input', (e) => {
+                input.value = e.target.value;
             });
 
+            controlsDiv.appendChild(input);
+            controlsDiv.appendChild(numberInput);
+
             group.appendChild(label);
-            group.appendChild(input);
+            group.appendChild(controlsDiv);
             slidersContainer.appendChild(group);
         });
     }

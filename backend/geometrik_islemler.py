@@ -4,8 +4,8 @@ def rotate_image(img, angle=45):
     h, w, c = img.shape
     rads = np.deg2rad(angle)
     
-    new_w = int(abs(w * np.cos(rads)) + abs(h * np.sin(rads)))
-    new_h = int(abs(w * np.sin(rads)) + abs(h * np.cos(rads)))
+    # Tuval boyutunu büyütmemek için orijinal boyutları kullanıyoruz
+    new_w, new_h = w, h
     
     cx, cy = w // 2, h // 2
     ncx, ncy = new_w // 2, new_h // 2

@@ -100,8 +100,10 @@ async def process_image(
             processed_img = renk_format.to_grayscale(img1)
         elif operation == "binary":
             processed_img = renk_format.to_binary(img1)
-        elif operation == "colorspace":
-            processed_img = renk_format.colorspace_transform(img1)
+        elif operation == "colorspace_hsv":
+            processed_img = renk_format.colorspace_transform_hsv(img1)
+        elif operation == "colorspace_ycbcr":
+            processed_img = renk_format.colorspace_transform_ycbcr(img1)
             
         elif operation == "rotate":
             angle = int(param1) if param1 else 45
@@ -113,7 +115,7 @@ async def process_image(
             height = int(param4) if param4 else 200
             processed_img = geometrik_islemler.crop_image(img1, start_x, start_y, width, height)
         elif operation == "zoom":
-            factor = float(param1) if param1 else 2.0
+            factor = (float(param1) / 100.0) if param1 else 2.0
             processed_img = geometrik_islemler.zoom_image(img1, factor)
             
         elif operation == "hist_stretch":
@@ -122,7 +124,7 @@ async def process_image(
             processed_img = piksel_histogram.reduce_contrast(img1)
             
         elif operation == "noise_sp":
-            prob = float(param1) if param1 else 0.05
+            prob = (float(param1) / 100.0) if param1 else 0.05
             processed_img = filtreleme_gurultu.add_salt_and_pepper(img1, prob)
         elif operation == "filter_mean":
             kernel = int(param1) if param1 else 3
