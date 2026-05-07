@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const resultPlaceholder = document.getElementById('result-placeholder');
     const loader = document.getElementById('loader');
     const resetBtn = document.getElementById('reset-btn');
+    const downloadBtn = document.getElementById('download-btn');
 
     // Sliders
     const slidersContainer = document.getElementById('sliders-container');
@@ -56,6 +57,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Slider Configurations
     const operationSliders = {
+        'binary': [
+            { id: 'param1', label: 'Eşik Değeri', min: 0, max: 255, step: 1, value: 127 }
+        ],
         'rotate': [
             { id: 'param1', label: 'Döndürme Açısı (Derece)', min: -180, max: 180, step: 1, value: 45 }
         ],
@@ -75,29 +79,29 @@ document.addEventListener('DOMContentLoaded', () => {
             { id: 'param1', label: 'Gürültü Yoğunluğu (%)', min: 1, max: 20, step: 1, value: 5 }
         ],
         'filter_mean': [
-            { id: 'param1', label: 'Bulanıklık Derecesi (Bölge Boyutu)', min: 3, max: 15, step: 2, value: 3 }
+            { id: 'param1', label: 'Filtre Boyutu', min: 3, max: 15, step: 2, value: 3 }
         ],
         'filter_median': [
-            { id: 'param1', label: 'Bulanıklık Derecesi (Bölge Boyutu)', min: 3, max: 15, step: 2, value: 3 }
+            { id: 'param1', label: 'Filtre Boyutu', min: 3, max: 15, step: 2, value: 3 }
         ],
         'filter_motion': [
-            { id: 'param1', label: 'Bulanıklık Şiddeti (Kernel)', min: 3, max: 31, step: 2, value: 9 }
+            { id: 'param1', label: 'Filtre Boyutu', min: 3, max: 31, step: 2, value: 9 }
         ],
         'threshold_double': [
             { id: 'param1', label: 'Alt Eşik', min: 0, max: 255, step: 1, value: 50 },
             { id: 'param2', label: 'Üst Eşik', min: 0, max: 255, step: 1, value: 150 }
         ],
         'dilate': [
-            { id: 'param1', label: 'Etki Miktarı (Bölge Boyutu)', min: 3, max: 15, step: 2, value: 3 }
+            { id: 'param1', label: 'Çekirdek Boyutu', min: 3, max: 15, step: 2, value: 3 }
         ],
         'erode': [
-            { id: 'param1', label: 'Etki Miktarı (Bölge Boyutu)', min: 3, max: 15, step: 2, value: 3 }
+            { id: 'param1', label: 'Çekirdek Boyutu', min: 3, max: 15, step: 2, value: 3 }
         ],
         'open': [
-            { id: 'param1', label: 'Etki Miktarı (Bölge Boyutu)', min: 3, max: 15, step: 2, value: 3 }
+            { id: 'param1', label: 'Çekirdek Boyutu', min: 3, max: 15, step: 2, value: 3 }
         ],
         'close': [
-            { id: 'param1', label: 'Etki Miktarı (Bölge Boyutu)', min: 3, max: 15, step: 2, value: 3 }
+            { id: 'param1', label: 'Çekirdek Boyutu', min: 3, max: 15, step: 2, value: 3 }
         ]
     };
 
@@ -244,6 +248,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateUndoButton() {
         undoBtn.disabled = historyStack.length <= 1;
         resetBtn.disabled = historyStack.length <= 1;
+        downloadBtn.disabled = historyStack.length <= 1;
     }
 
     undoBtn.addEventListener('click', () => {
@@ -260,6 +265,15 @@ document.addEventListener('DOMContentLoaded', () => {
             historyStack = [baseImg];
             resultImg.src = baseImg;
             updateUndoButton();
+        }
+    });
+
+    downloadBtn.addEventListener('click', () => {
+        if (historyStack.length > 1) {
+            const link = document.createElement('a');
+            link.href = historyStack[historyStack.length - 1];
+            link.download = 'islenmis_goruntu.png';
+            link.click();
         }
     });
 

@@ -99,7 +99,8 @@ async def process_image(
         if operation == "gray":
             processed_img = renk_format.to_grayscale(img1)
         elif operation == "binary":
-            processed_img = renk_format.to_binary(img1)
+            threshold = int(param1) if param1 else 127
+            processed_img = renk_format.to_binary(img1, threshold)
         elif operation == "colorspace_hsv":
             processed_img = renk_format.colorspace_transform_hsv(img1)
         elif operation == "colorspace_ycbcr":

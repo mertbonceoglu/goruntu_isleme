@@ -3,8 +3,9 @@ import threading
 import time
 import os
 import uvicorn
-from PyQt6.QtWidgets import QApplication, QMainWindow
+from PyQt6.QtWidgets import QApplication, QMainWindow, QFileDialog
 from PyQt6.QtWebEngineWidgets import QWebEngineView
+from PyQt6.QtWebEngineCore import QWebEngineProfile
 from PyQt6.QtCore import QUrl
 
 # Frontend ve Backend yollarını ayarlama (PyInstaller uyumluluğu)
@@ -32,7 +33,20 @@ class MainWindow(QMainWindow):
         self.browser = QWebEngineView()
         self.browser.setUrl(QUrl("http://127.0.0.1:8000"))
         
+        # İndirme isteklerini yakala
+        QWebEngineProfile.defaultProfile().downloadRequested.connect(self.handle_download)
+        
         self.setCentralWidget(self.browser)
+    
+    def handle_download(self, download):
+        suggested_name = download.downloadFileName() or "islenmis_goruntu.png"
+        path, _ = QFileDialog.getSaveFileName(self, "Görüntüyü Kaydet", suggested_name, "PNG Dosyası (*.png);;Tüm Dosyalar (*)")
+        if path:
+            download.setDownloadFileName(os.path.basename(path))
+            download.setDownloadDirectory(os.path.dirname(path))
+            download.accept()
+        else:
+            download.cancel()
 
 if __name__ == '__main__':
     # FastAPI Sunucusunu arka planda başlat
