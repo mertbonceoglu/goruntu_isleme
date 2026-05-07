@@ -121,7 +121,9 @@ async def process_image(
         elif operation == "hist_stretch":
             processed_img = piksel_histogram.histogram_stretch(img1)
         elif operation == "contrast":
-            processed_img = piksel_histogram.reduce_contrast(img1)
+            reduction_percent = float(param1) if param1 else 50.0
+            factor = 1.0 - (reduction_percent / 100.0)
+            processed_img = piksel_histogram.reduce_contrast(img1, factor)
             
         elif operation == "noise_sp":
             prob = (float(param1) / 100.0) if param1 else 0.05

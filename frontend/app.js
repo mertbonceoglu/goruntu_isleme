@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const resultImg = document.getElementById('result-img');
     const resultPlaceholder = document.getElementById('result-placeholder');
     const loader = document.getElementById('loader');
+    const resetBtn = document.getElementById('reset-btn');
 
     // Sliders
     const slidersContainer = document.getElementById('sliders-container');
@@ -64,8 +65,11 @@ document.addEventListener('DOMContentLoaded', () => {
         'crop': [
             { id: 'param1', label: 'Başlangıç X', min: 0, max: 2000, step: 10, value: 50 },
             { id: 'param2', label: 'Başlangıç Y', min: 0, max: 2000, step: 10, value: 50 },
-            { id: 'param3', label: 'Genişlik', min: 50, max: 2000, step: 10, value: 300 },
-            { id: 'param4', label: 'Yükseklik', min: 50, max: 2000, step: 10, value: 300 }
+            { id: 'param3', label: 'Genişlik', min: 50, max: 2000, step: 1, value: 300 },
+            { id: 'param4', label: 'Yükseklik', min: 50, max: 2000, step: 1, value: 300 }
+        ],
+        'contrast': [
+            { id: 'param1', label: 'Kontrast Azaltma Miktarı (%)', min: 0, max: 100, step: 5, value: 50 }
         ],
         'noise_sp': [
             { id: 'param1', label: 'Gürültü Yoğunluğu (%)', min: 1, max: 20, step: 1, value: 5 }
@@ -201,10 +205,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 preview1.src = e.target.result;
                 preview1.style.display = 'block';
                 placeholder1.style.display = 'none';
-                historyStack = [];
+                
+                // Show original image in the result area
+                resultImg.src = e.target.result;
+                resultImg.style.display = 'block';
+                resultPlaceholder.style.display = 'none';
+                
+                historyStack = [e.target.result];
                 updateUndoButton();
-                resultImg.style.display = 'none';
-                resultPlaceholder.style.display = 'flex';
+                
+                preview1.onload = function() {
+                    if(operationSliders['crop']) {
+                        operationSliders['crop'][0].max = preview1.naturalWidth;
+                        operationSliders['crop'][1].max = preview1.naturalHeight;
+                        operationSliders['crop'][2].max = preview1.naturalWidth;
+                        operationSliders['crop'][3].max = preview1.naturalHeight;
+                        if (currentOperation === 'crop') renderSliders('crop');
+                    }
+                };
             }
             reader.readAsDataURL(file);
         }
@@ -224,18 +242,23 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function updateUndoButton() {
-        undoBtn.disabled = historyStack.length === 0;
+        undoBtn.disabled = historyStack.length <= 1;
+        resetBtn.disabled = historyStack.length <= 1;
     }
 
     undoBtn.addEventListener('click', () => {
-        if (historyStack.length > 0) {
+        if (historyStack.length > 1) {
             historyStack.pop();
-            if (historyStack.length > 0) {
-                resultImg.src = historyStack[historyStack.length - 1];
-            } else {
-                resultImg.style.display = 'none';
-                resultPlaceholder.style.display = 'flex';
-            }
+            resultImg.src = historyStack[historyStack.length - 1];
+            updateUndoButton();
+        }
+    });
+
+    resetBtn.addEventListener('click', () => {
+        if (historyStack.length > 1) {
+            const baseImg = historyStack[0];
+            historyStack = [baseImg];
+            resultImg.src = baseImg;
             updateUndoButton();
         }
     });
@@ -346,14 +369,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 updateUndoButton();
             } else {
                 showToast('Hata: ' + data.message);
-                if (historyStack.length > 0) resultImg.style.display = 'block';
-                else resultPlaceholder.style.display = 'flex';
             }
         } catch (error) {
             console.error('Error:', error);
             showToast('Sunucuya bağlanılamadı.');
-            if (historyStack.length > 0) resultImg.style.display = 'block';
-            else resultPlaceholder.style.display = 'flex';
         } finally {
             loader.style.display = 'none';
             processBtn.disabled = false;

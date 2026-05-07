@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+PyQt6
+PyQt6-WebEngine
+opencv-python
+numpy
+matplotlib
+python-multipart
