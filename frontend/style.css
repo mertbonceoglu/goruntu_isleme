@@ -82,7 +82,7 @@ body::after {
 }
 
 .logo {
-    display: none; /* Logo SVG ile değiştirildi, bunu gizleyebiliriz veya silebiliriz, class kalabilir */
+    display: none;
 }
 
 .menu {
@@ -151,6 +151,25 @@ body::after {
 .subtitle {
     font-size: 13px;
     color: var(--text-muted);
+}
+
+.action-card {
+    text-align: center;
+    width: 100%;
+    padding: 16px 24px;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(139, 92, 246, 0.08));
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.action-card h2 {
+    font-size: 20px;
+    margin-bottom: 6px;
+    background: linear-gradient(135deg, #60a5fa, #a78bfa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 .primary-btn {
@@ -263,7 +282,6 @@ body::after {
     100% { transform: rotate(360deg); }
 }
 
-/* Added styles for modal and secondary button */
 .secondary-btn {
     background-color: transparent;
     color: var(--text-main);

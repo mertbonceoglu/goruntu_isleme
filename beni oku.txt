@@ -1,5 +1,5 @@
 projeyi sorunsuz açmak için yapılması gerekenler:
 1. klasörü rardan çıkarın.
 2. klasörün içine girip o klasörün içine sağ tıklayarak terminalde aça basın.
-3. terminale: " pip insttall -r requirements.txt " yazın. Bu gereken paketleri yükleyecek.
+3. terminale: " pip install -r requirements.txt " yazın. Bu gereken paketleri yükleyecek.
 4. bunları yükledikten sonra terminale " python desktop_app.py " yazınca uygulama açılır.

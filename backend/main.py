@@ -12,7 +12,7 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
-# İlgili modüller
+# Görüntü işleme modülleri (her kategori ayrı dosyada)
 import renk_format
 import geometrik_islemler
 import piksel_histogram
@@ -49,13 +49,12 @@ async def get_histogram(file: UploadFile = File(...)):
         if img is None:
             return JSONResponse(status_code=400, content={"message": "Resim okunamadı."})
 
-        # Calculate histogram manually
         plt.figure(figsize=(6, 4))
         
-        # Sadece histogram çizimi için görüntüyü gri seviyeye çeviriyoruz
+        # Histogram için gri seviyeye çeviriyoruz
         gray = renk_format.to_grayscale(img)[:,:,0]
         
-        # Matplotlib'in hist fonksiyonu ile çubuk (bar) grafiği çizdiriyoruz
+        # Histogram çizimi (256 bin, 0-255 aralığı)
         plt.hist(gray.ravel(), 256, [0,256], width=1.0)
         plt.xlim([0,256])
             

@@ -8,16 +8,14 @@ from PyQt6.QtWebEngineWidgets import QWebEngineView
 from PyQt6.QtWebEngineCore import QWebEngineProfile
 from PyQt6.QtCore import QUrl
 
-# Frontend ve Backend yollarını ayarlama (PyInstaller uyumluluğu)
 if getattr(sys, 'frozen', False):
     application_path = sys._MEIPASS
 else:
     application_path = os.path.dirname(os.path.abspath(__file__))
 
-# backend klasörünü path'e ekliyoruz ki main.py içindeki modüller bulunabilsin
 backend_path = os.path.join(application_path, "backend")
 sys.path.append(backend_path)
-os.chdir(backend_path) # Statik dosyaların bulunabilmesi için çalışma dizinini değiştir
+os.chdir(backend_path)
 
 from main import app
 
@@ -33,7 +31,6 @@ class MainWindow(QMainWindow):
         self.browser = QWebEngineView()
         self.browser.setUrl(QUrl("http://127.0.0.1:8000"))
         
-        # İndirme isteklerini yakala
         QWebEngineProfile.defaultProfile().downloadRequested.connect(self.handle_download)
         
         self.setCentralWidget(self.browser)
@@ -49,15 +46,12 @@ class MainWindow(QMainWindow):
             download.cancel()
 
 if __name__ == '__main__':
-    # FastAPI Sunucusunu arka planda başlat
     server_thread = threading.Thread(target=start_fastapi)
     server_thread.daemon = True
     server_thread.start()
     
-    # Sunucunun ayağa kalkması için kısa bir süre bekle
     time.sleep(1.5)
     
-    # PyQt ile masaüstü penceresini başlat
     qt_app = QApplication(sys.argv)
     window = MainWindow()
     window.show()

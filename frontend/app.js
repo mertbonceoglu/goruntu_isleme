@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const currentActionTitle = document.getElementById('current-action-title');
     const panel2 = document.getElementById('panel2');
     
-    // File inputs & previews
+    // Dosya yükleme ve önizleme
     const file1 = document.getElementById('file1');
     const preview1 = document.getElementById('preview1');
     const placeholder1 = document.getElementById('placeholder1');
@@ -33,8 +33,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let historyStack = [];
     let currentOperation = 'gray';
+    const currentActionDesc = document.getElementById('current-action-desc');
 
-    // Toast Notification System
+    // İşlem Açıklamaları
+    const operationDescriptions = {
+        'gray': 'Görüntüyü gri tonlamaya dönüştürür.',
+        'binary': 'Pikselleri eşik değerine göre siyah veya beyaza çevirir.',
+        'colorspace_hsv': 'Renk uzayını RGB\'den HSV formatına dönüştürür.',
+        'colorspace_ycbcr': 'Renk uzayını RGB\'den YCbCr formatına dönüştürür.',
+        'rotate': 'Görüntüyü belirlenen açıda döndürür.',
+        'crop': 'Görüntünün seçilen bölgesini keser.',
+        'zoom': 'Görüntüyü yakınlaştırır veya uzaklaştırır.',
+        'show_histogram': 'Görüntünün piksel yoğunluk dağılımını gösterir.',
+        'hist_stretch': 'Histogramı gererek kontrastı artırır.',
+        'contrast': 'Görüntünün kontrastını belirlenen oranda azaltır.',
+        'noise_sp': 'Görüntüye rastgele tuz-biber gürültüsü ekler.',
+        'filter_mean': 'Ortalama filtresi ile görüntüyü yumuşatır.',
+        'filter_median': 'Medyan filtresi ile gürültüyü temizler.',
+        'filter_motion': 'Hareket bulanıklığı efekti uygular.',
+        'threshold_double': 'Pikselleri iki eşik değerine göre sınıflandırır.',
+        'canny': 'Görüntüdeki kenarları tespit eder.',
+        'dilate': 'Parlak bölgeleri genişleterek nesneleri büyütür.',
+        'erode': 'Parlak bölgeleri aşındırarak nesneleri küçültür.',
+        'open': 'Önce aşındırıp sonra genişleterek gürültüyü temizler.',
+        'close': 'Önce genişletip sonra aşındırarak boşlukları doldurur.',
+        'arithmetic_sub': 'Bir görüntünün piksellerini diğerinden çıkararak fark görüntüsü oluşturur.',
+        'arithmetic_mul': 'İki görüntünün piksel değerlerini çarpar.'
+    };
+
+    // Bildirim sistemi
     function showToast(message, type = 'error') {
         const container = document.getElementById('toast-container');
         if (!container) return;
@@ -55,7 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 3000);
     }
 
-    // Slider Configurations
+    // Slider ayarları
     const operationSliders = {
         'binary': [
             { id: 'param1', label: 'Eşik Değeri', min: 0, max: 255, step: 1, value: 127 }
@@ -165,7 +192,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Accordion Logic
+    // Açılır menü mantığı
     const accordionHeaders = document.querySelectorAll('.accordion-header');
     accordionHeaders.forEach(header => {
         header.addEventListener('click', () => {
@@ -175,7 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Menu logic
+    // Menü mantığı
     menuBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             menuBtns.forEach(b => b.classList.remove('active'));
@@ -183,6 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             currentActionTitle.textContent = btn.textContent;
             currentOperation = btn.dataset.action;
+            currentActionDesc.textContent = operationDescriptions[currentOperation] || '';
 
             renderSliders(currentOperation);
 
@@ -194,10 +222,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Initial render
+    // İlk yükleme
     renderSliders(currentOperation);
 
-    // Upload logic
+    // Yükleme işlemi
     upload1.addEventListener('click', () => file1.click());
     upload2.addEventListener('click', () => file2.click());
 
@@ -210,7 +238,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 preview1.style.display = 'block';
                 placeholder1.style.display = 'none';
                 
-                // Show original image in the result area
+                // Sonuç alanında orijinal görüntüyü göster
                 resultImg.src = e.target.result;
                 resultImg.style.display = 'block';
                 resultPlaceholder.style.display = 'none';
@@ -277,7 +305,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Keyboard Shortcuts
+    // Klavye kısayolları
     document.addEventListener('keydown', (e) => {
         if ((e.ctrlKey || e.metaKey) && (e.key === 'z' || e.key === 'Z')) {
             e.preventDefault();
@@ -354,7 +382,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         formData.append('operation', currentOperation);
         
-        // Append dynamic slider params
+        // Slider parametrelerini ekle
         const currentSliders = operationSliders[currentOperation];
         if (currentSliders) {
             currentSliders.forEach(slider => {
